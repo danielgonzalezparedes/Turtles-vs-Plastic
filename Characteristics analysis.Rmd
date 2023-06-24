@@ -1,0 +1,139 @@
+---
+title: "Analysis of characteristic impactability"
+author: "DGP"
+date: "2023-06-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+```
+
+```{r}
+# Working directory -------------------------------------------------------
+
+setwd("C:/Users/jc480001/OneDrive - James Cook University/JCU_Daniel/PhD papers/Impact severity (4th Chapter)/Databases/v7.Analysis")
+```
+
+
+#VOLUME
+```{r}
+vol_data <- read.csv('volume_data.csv')
+str(data)
+```
+#IMPACT (0/1) ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+##Total Volume
+```{r}
+impact_totalvol <- lm(impact ~ she_total + thr_total + frag_total + foam_total + poth_total + ind_total , data = vol_data, family = binomial(link = logit))
+summary(impact_totalvol)
+```
+##All volume ranges
+```{r}
+impact_allvol <- lm(impact ~ she_macro + thr_macro + frag_macro + foam_macro + poth_macro + ind_macro + she_meso + thr_meso + frag_meso + foam_meso + poth_meso + ind_meso + she_micro + thr_micro + frag_micro + foam_micro + poth_micro + ind_micro , data = vol_data, family = binomial(link = logit))
+summary(impact_allvol)
+```
+
+##Macro Volume
+```{r}
+impact_macrovol <- lm(impact ~ she_macro + thr_macro + frag_macro + foam_macro + poth_macro + ind_macro , data = vol_data, family = binomial(link = logit))
+summary(impact_macrovol)
+```
+
+##Meso Volume
+```{r}
+impact_mesovol <- lm(impact ~ she_meso + thr_meso + frag_meso + foam_meso + poth_meso + ind_meso , data = vol_data, family = binomial(link = logit))
+summary(impact_mesovol)
+```
+
+##Micro Volume
+```{r}
+impact_microvol <- lm(impact ~ she_micro + thr_micro + frag_micro + foam_micro + poth_micro + ind_micro , data = vol_data, family = binomial(link = logit))
+summary(impact_microvol)
+```
+#AIC test verification
+```{r}
+library(AICcmodavg)
+```
+
+```{r}
+model.set <- list(impact_totalvol, impact_allvol, impact_macrovol, impact_mesovol, impact_microvol)
+model.names <- c('totalvol','allvol','macrovol','mesovol','microvol')
+
+aictab(model.set, modnames = model.names)
+```
+
+
+
+#IPS2 vs IPS 3 impactability +++++++++++++++++++++++++++++++++++++++++++++++++++
+```{r}
+ips23 <- vol_data %>% filter(ips != '1')
+```
+ 
+
+##Total Volume
+```{r}
+ips23_totalvol <- lm(ips ~ she_total + thr_total + frag_total + foam_total + poth_total + ind_total , data = ips23, family = binomial(link = logit))
+summary(ips23_totalvol)
+```
+
+
+##All volume ranges
+```{r}
+ips23_allvol <- lm(ips ~ she_macro + thr_macro + frag_macro + foam_macro + poth_macro + ind_macro + she_meso + thr_meso + frag_meso + foam_meso + poth_meso + ind_meso + she_micro + thr_micro + frag_micro + foam_micro + poth_micro + ind_micro , data = vol_data, family = binomial(link = logit))
+summary(ips23_allvol)
+```
+
+##Macro Volume
+```{r}
+ips23_macrovol <- lm(ips ~ she_macro + thr_macro + frag_macro + foam_macro + poth_macro + ind_macro , data = ips23, family = binomial(link = logit))
+summary(ips23_macrovol)
+```
+
+##Meso Volume
+```{r}
+ips23_mesovol <- lm(ips ~ she_meso + thr_meso + frag_meso + foam_meso + poth_meso + ind_meso , data = ips23, family = binomial(link = logit))
+summary(ips23_mesovol)
+```
+
+##Micro Volume
+```{r}
+ips23_microvol <- lm(ips ~ she_micro + thr_micro + frag_micro + foam_micro + poth_micro + ind_micro , data = ips23, family = binomial(link = logit))
+summary(ips23_microvol)
+```
+#AIC test verification
+```{r}
+library(AICcmodavg)
+```
+
+```{r}
+model.set <- list(ips23_totalvol, ips23_allvol, ips23_macrovol, ips23_mesovol, ips23_microvol)
+model.names <- c('totalvol','allvol','macrovol','mesovol','microvol')
+
+aictab(model.set, modnames = model.names)
+```
+
